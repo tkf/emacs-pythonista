@@ -50,6 +50,15 @@ FORM is checked at compile time."
           file-or-files)
     code))
 
+(defvar pyt--run-once-used-keys nil)
+
+(defmacro pyt--run-once (key &rest body)
+  (declare (indent defun))
+  (assert (symbolp (eval key)) nil "Key must be a symbol")
+  `(unless (member ,key pyt--run-once-used-keys)
+     (add-to-list 'pyt--run-once-used-keys ,key)
+     ,@body))
+
 
 
 ;;; python
@@ -94,6 +103,29 @@ __import__('IPython.core.completerlib')\
 (setq ein:use-auto-complete-superpack t
       ein:use-smartrep t)
 (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+
+
+
+;;; Ropemacs
+(declare-function pymacs-load "pymacs")
+(declare-function ropemacs-mode "ropemacs")
+
+(defvar pythonista-ropemacs-load-hook nil)
+
+(defun pyt--ropemacs-setup ()
+  ;; Set `use-file-dialog' nil to prevent GUI pop-up.
+  ;; I don't know if it is good for other mode, so make it buffer local.
+  (set (make-local-variable 'use-file-dialog) nil)
+
+  (pyt--run-once 'ropemacs-setup
+    (require 'pymacs)
+    (pymacs-load "ropemacs" "rope-")
+    (run-hooks 'pythonista-ropemacs-load-hook)
+
+    ;; The hook function (`ropemacs-mode') to enable ropemacs-mode is
+    ;; just added to `python-mode-hook', so it won't be called this
+    ;; time.  That's why I'm calling this manually here:
+    (ropemacs-mode t)))
 
 
 (provide 'pythonista)
