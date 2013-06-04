@@ -2,6 +2,8 @@
  Turn Emacs into an IDE for Pythonista!
 ========================================
 
+.. warning:: WORK IN PROGRESS
+
 Emacs has various packages to enhance programming in Python.  But
 setting up them separately is cumbersome.  This package aims at
 providing sane default for the best practice.
