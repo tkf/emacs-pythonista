@@ -127,6 +127,7 @@ __import__('IPython.core.completerlib')\
     ;; time.  That's why I'm calling this manually here:
     (ropemacs-mode t)))
 
+(add-hook 'python-mode-hook 'pyt--ropemacs-setup)
 
 (provide 'pythonista)
 
